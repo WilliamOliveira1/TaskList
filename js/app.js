@@ -10,6 +10,8 @@ loadEventListeners();
 
 //Method to load event listener
 function loadEventListeners() {
+    // DOM load events
+    document.addEventListener('DOMContentLoaded', getTasks);
     // Add task event
     form.addEventListener('submit', addTask);
     //Remove TaskEvent
@@ -18,6 +20,39 @@ function loadEventListeners() {
     clearBtn.addEventListener('click', clearTasks);
     // Filter task event
     filter.addEventListener('keyup', filterTasks);
+}
+
+// Method to load from local storage into DOM
+function getTasks() {
+    let tasks;
+
+    if (localStorage.getItem('tasks') === null) {
+        tasks = []
+    } else {
+        tasks = JSON.parse(localStorage.getItem('tasks'));
+    }
+
+    tasks.forEach(function (task) {
+        //Create li element
+        const li = document.createElement('li');
+        li.className = 'collection-item';
+
+        //Create text node and append to li
+        li.appendChild(document.createTextNode(task));
+
+        //Create link element
+        const link = document.createElement('a');
+        link.className = 'delete-item secondary-content';
+
+        //Add icon to link
+        link.innerHTML = '<i class="fas fa-minus-circle"></i>'
+
+        //append link to li
+        li.appendChild(link);
+
+        // Append li to ul
+        taskList.appendChild(li);
+    })
 }
 
 // Add task
@@ -44,6 +79,9 @@ function addTask(e) {
         //append link to li
         li.appendChild(link);
 
+        // Store data in LocalStorage
+        storeTaskInLocalStorage(taskInput.value);
+
         //append li to ul
         taskList.appendChild(li);
 
@@ -54,6 +92,19 @@ function addTask(e) {
     e.preventDefault();
 }
 
+//Method to save data in localStorage(browser)
+function storeTaskInLocalStorage(task) {
+    let tasks;
+
+    if (localStorage.getItem('tasks') === null) {
+        tasks = []
+    } else {
+        tasks = JSON.parse(localStorage.getItem('tasks'));
+    }
+
+    tasks.push(task);
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
 
 //Method to remove single task
 function removeTask(e) {
@@ -74,14 +125,14 @@ function clearTasks() {
 // Method to filter task 
 function filterTasks(e) {
     const text = e.target.value.toLowerCase();
-    
+
     const filter = document.querySelectorAll('.collection-item');
 
-    filter.forEach(function(task) {
+    filter.forEach(function (task) {
         const item = task.firstChild.textContent;
-        if(item.toLowerCase().indexOf(text) != -1) {
+        if (item.toLowerCase().indexOf(text) != -1) {
             task.style.display = 'block'
-        }else {
+        } else {
             task.style.display = 'none'
         }
     })
