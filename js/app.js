@@ -111,15 +111,44 @@ function removeTask(e) {
     if (e.target.parentElement.classList.contains('delete-item')) {
         if (confirm('Are you sure that you want to delete this task?')) {
             e.target.parentElement.parentElement.remove();
+
+            // Remove single task from local storage
+            removeTaskFromLocalStorage(e.target.parentElement.parentElement);
         }
     }
 }
+
+// Method to remove single task from local storage
+function removeTaskFromLocalStorage(taskItem) {
+    let tasks;
+    if(localStorage.getItem('tasks') === null){
+      tasks = [];
+    } else {
+      tasks = JSON.parse(localStorage.getItem('tasks'));
+    }
+  
+    tasks.forEach(function(task, index){
+      if(taskItem.textContent === task){
+        tasks.splice(index, 1);
+      }
+    });
+  
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }
 
 // Method to remove all tasks
 function clearTasks() {
     while (taskList.firstChild) {
         taskList.removeChild(taskList.firstChild)
     }
+
+    // Remove all tasks from local storage
+    clearTasksFromLocalStorage();
+}
+
+// Method to remove all data from local storage 
+function clearTasksFromLocalStorage() {
+    localStorage.clear();
 }
 
 // Method to filter task 
