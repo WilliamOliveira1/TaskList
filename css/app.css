@@ -3,3 +3,12 @@
     margin: 0;
     padding: 0;
 }
+
+.margin-bottom {
+    margin-bottom: 50px;
+}
+
+.clear-values {
+    margin-bottom: 50px;
+    padding-bottom: 50px;
+}
